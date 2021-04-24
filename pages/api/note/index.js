@@ -1,21 +1,16 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
-// pages/api/data
-import nc from 'next-connect';
-import cors from 'cors';
+import nc from 'next-connect'
+import notes from '../../../src/data/data'
 
 const handler = nc()
-    // use connect based middleware
-    .use(cors())
-    // express like routing for methods
     .get((req, res) => {
-      res.send('Hello world')
+        res.json({data: notes})
     })
     .post((req, res) => {
-      res.json({ hello: 'world' })
-    })
-    .put(async (req, res) => {
-      res.end('hello')
-    })
+        const id = Date.now()
+        const note = {...req.body, id}
 
-export default handler;
+        notes.push(note)
+        res.json({data: note})
+    })
+export default handler
