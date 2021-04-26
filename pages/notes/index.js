@@ -3,16 +3,14 @@
 import { jsx } from 'theme-ui'
 import Link from 'next/link'
 
-const Page = () => {
-    const notes = new Array(15).fill(1).map((e, i) => ({id: i, title: `This is my note ${i}`}))
-
+const Page = ({notes}) => {
     return (
         <div sx={{variant: 'containers.page'}}>
             <h1>My Notes</h1>
 
             <div sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap'}}>
-                {notes.map(note => (
-                    <div sx={{width: '33%', p: 2}}>
+                {notes.map((note, i) => (
+                    <div sx={{width: '33%', p: 2}} key={i}>
                         <Link key={note.id} href="/notes/[id]" as={`/notes/${note.id}`}>
                             <a sx={{textDecoration: 'none', cursor: 'pointer'}}>
                                 <div sx={{variant: 'containers.card',}}>
@@ -26,4 +24,14 @@ const Page = () => {
         </div>
     )
 }
+
+export async function getServerSideProps() {
+    const res = await fetch(`http://localhost:3000/api/note/`)
+    const {data} = await res.json()
+    console.log(data)
+    return {
+        props: {notes: data}
+    }
+}
+
 export default Page
